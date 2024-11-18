@@ -1,0 +1,13 @@
+body{
+  background:#5C7457;
+}
+.container {
+  background: linear-gradient(45deg,#ACECF7,#D6F6DD);
+  width:30%;
+  min-height:250px;
+  margin:10px auto;
+  border-radius: 10px;
+}
+.container input{
+  width:50%;
+}
