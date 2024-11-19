@@ -10,40 +10,42 @@ app.use(express.json());
 
 mongoose
   .connect("mongodb://127.0.0.1:27017/todo")
-  .then(() => console.log("DB Success"));
+  .then(() => console.log("DB Connected"));
 const Activity = mongoose.model("Activity", { name: String }, "activity");
 
 // const activity = ["Apple", "Grape"];
+// console.log(activity)
 
 app.get("/activitylist", (req, res) => {
-  Activity.find().then(function (retdata) {
+  // res.send(activity)
+  Activity.find().then((retdata) => {
     console.log(retdata);
     res.send(retdata);
   });
-  //   res.send(activity);
 });
 
 app.post("/addactivity", (req, res) => {
-  var newactivity = req.body.newactivity;
-  //   activity.push(newactivity);
+  var newact = req.body.newactivity;
+  // console.log(req.body)
+  // activity.push(newact);
   const newActivity = new Activity({
-    name: newactivity,
+    name: newact,
   });
-  newActivity.save().then(() => "Saved Successfully");
+  newActivity.save().then(() => console.log("Saved Successfully"));
 });
 
-app.post("/deletetodo", (req, res) => {
-  const actid = req.body.id;
-  Activity
-    .findByIdAndDelete(actid)
-    .then(() => {
-      res.status(200).send({ message: "Item deleted successfully!" });
-      console.log("Deleted successfully!");
-    })
-    .catch((err) => {
-      console.error("Error:", err);
-      res.status(500).send({ message: "Failed to delete Item", error: err });
-    });
+app.post("/deleteactivity", (req, res) => {
+  const activityId = req.body.id;
+
+  Activity.findByIdAndDelete(activityId)
+      .then(() => {
+          res.status(200).send({ message: "Activity deleted successfully!" });
+          console.log("Deleted successfully!");
+      })
+      .catch((err) => {
+          console.error("Error deleting activity:", err);
+          res.status(500).send({ message: "Failed to delete activity", error: err });
+      });
 });
 
 app.listen(5000, function () {

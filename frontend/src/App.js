@@ -5,32 +5,30 @@ function Todo() {
   const [input, setinput] = useState("");
   const [activity, setactivity] = useState([]);
 
-  useEffect(function () {
-    axios.get("http://localhost:5000/activitylist").then(function (data) {
-      setactivity(data.data);
-      // console.log(data.data)
-    });
-  }, []);
-
   const handlechange = (eve) => {
     setinput(eve.target.value);
   };
 
   const added = () => {
+    axios.post("http://localhost:5000/addactivity", { newactivity: input });
     setactivity([...activity, { name: input }]);
     setinput("");
-    axios.post("http://localhost:5000/addactivity", { newactivity: input });
   };
-  const deletetodo = (id) => {
-    axios
-      .post("http://localhost:5000/deletetodo", { id })
+
+  useEffect(function () {
+    axios.get("http://localhost:5000/activitylist").then((data) => {
+      setactivity(data.data);
+      //  console.log(data.data)
+    });
+  }, []);
+
+  const deleteActivity = (id) => {
+    axios.post(`http://localhost:5000/deleteactivity`, { id })
       .then(() => {
-        setactivity((prevActivities) =>
-          prevActivities.filter((item) => item._id !== id)
-        );
+        setactivity((prevActivities) => prevActivities.filter((item) => item._id !== id));
       })
       .catch((err) => {
-        console.error("Error:", err);
+        console.error("Error deleting activity:", err);
       });
   };
 
@@ -59,10 +57,10 @@ function Todo() {
             >
               <p className="p-1">{items.name}</p>
               <button
-                onClick={() => {
-                  deletetodo(items._id);
-                }}
                 className="rounded-xl border border-black p-1 w-14"
+                onClick={() => {
+                  deleteActivity(items._id);
+                }}
               >
                 Delete
               </button>
